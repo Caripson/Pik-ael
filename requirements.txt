@@ -1,0 +1,4 @@
+mkdocs
+# Add other Python dependencies here as needed, for example:
+# requests
+# pytest
