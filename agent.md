@@ -2,47 +2,51 @@
 
 ## Aktuell Status
 
-Projektet har slutfört den **initiala setup-fasen**. Grundläggande katalogstruktur, initiala filer, och dokumentationsmiljö (`mkdocs.yml`, `docs/index.md`) är på plats.
+## Aktuell Status
 
--   **Kataloger:** `src/`, `tests/`, `docs/`
--   **Källkod:** `src/ISSTracker.pq` (initial platshållare)
--   **Tester:** `tests/test_ISSTracker.pq` (initial platshållare)
--   **Beroenden:** `requirements.txt` (med `mkdocs`), `setup.sh`
--   **Dokumentation:** Grundläggande MkDocs-struktur är redo.
--   **Agent.md:** Denna fil är uppdaterad.
+Kärnfunktionaliteten för ISS Tracker-anslutningen (datahämtning och transformation i `src/ISSTracker.pq`) är implementerad och dokumenterad (`docs/api_connection.md`). Ändringarna har committats till grenen `feat/iss-tracker-core`.
+
+-   **Källkod:** `src/ISSTracker.pq` innehåller logik för att hämta och bearbeta ISS-data.
+-   **Tester:** `tests/test_ISSTracker.pq` innehåller konceptuella tester.
+-   **Dokumentation:** Uppdaterad med anslutningsdetaljer.
 
 ## Taktiska Mål & Nästa Steg
 
-Fokus ligger nu på att implementera kärnfunktionaliteten för ISS-anslutningen enligt **Testdriven Utveckling (TDD)** och `roadmap.json` (Fas 2).
+Fokus ligger nu på att **förbereda projektet för bygge och driftsättning** så att en annan agent (eller mänsklig utvecklare) med tillgång till Power Query SDK kan slutföra Fas 3 (BUILD_AND_DEPLOY) och Fas 4 (END_TO_END_VALIDATION) från `roadmap.json`.
 
-1.  **Skriv ett misslyckat test (TDD Steg 1):**
-    *   I `tests/test_ISSTracker.pq`, definiera ett testfall för `ISSTracker.Contents()`.
-    *   Testet ska initialt verifiera att den nuvarande platshållardatan returneras, och sedan anpassas för att förvänta sig den faktiska datastrukturen från API:et (två rader: latitud och longitud).
-2.  **Implementera datalogiken (TDD Steg 2):**
-    *   Modifiera `src/ISSTracker.pq` för att implementera logiken från `roadmap.json` (fas 2, steg 2.1):
-        *   Hämta data från `http://api.open-notify.org/iss-now.json`.
-        *   Parsea JSON och transformera till en tabell med kolumnerna "Egenskap" och "Värde".
-3.  **Kör tester och refaktorera (TDD Steg 3):**
-    *   Säkerställ att testet från steg 1 passerar.
-    *   Refaktorera koden för tydlighet och underhållbarhet.
-4.  **Uppdatera dokumentationen:**
-    *   Skapa `docs/api_connection.md` för att beskriva anslutningens funktion, API-källa och datastruktur.
-    *   Uppdatera `mkdocs.yml` och eventuellt `docs/index.md`.
-5.  **Förbered för bygge och validering:**
-    *   När ovanstående är klart är nästa steg enligt `roadmap.json` att bygga `.mez`-filen (Fas 3) och validera (Fas 4). Detta kommer att kräva användning av Power Query SDK-verktyg, troligtvis i VS Code.
+1.  **Hantera ikonfilsreferenser:**
+    *   Skapa platshållare för de PNG-ikonfiler som refereras i `src/ISSTracker.pq` i en ny katalog `resources/icons/`.
+    *   Uppdatera sökvägarna i `src/ISSTracker.pq` till dessa platshållare.
+2.  **Skapa ett `build.sh` skript:**
+    *   Innehåller kommenterade kommandon och instruktioner för att bygga `.mez`-filen med Power Query SDK, enligt `roadmap.json`.
+3.  **Skapa en `.proj`-fils platshållare:**
+    *   Skapa en minimal `ISSTracker.proj` fil, då `roadmap.json` refererar till den för bygget.
+4.  **Uppdatera `README.md`:**
+    *   Lägg till en sektion "Bygga Anslutningen" med instruktioner.
+    *   Notera behovet av faktiska ikoner.
 
 ## Viktiga Filer & Kontext
 
 -   `README.md`: Övergripande projektprinciper och struktur.
--   `roadmap.json`: Detaljerad, maskinläsbar projektplan. **Använd M-koden från steg 2.1 i denna fil för implementeringen.**
+-   `roadmap.json`: Detaljerad projektplan. Fas 3 och 4 är nästa huvudsteg.
 -   `src/ISSTracker.pq`: Källkodsfil för anslutningen.
 -   `tests/test_ISSTracker.pq`: Testfil.
 -   `docs/`: Katalog för MkDocs-dokumentation.
+-   `build.sh` (ska skapas): Skript för att guida byggprocessen.
+-   `ISSTracker.proj` (ska skapas): Platshållare för projektfil.
+-   `resources/icons/` (ska skapas): Katalog för ikonfiler.
 
-## Instruktioner för AI-agent
+## Instruktioner för nästa AI-agent (eller utvecklare)
 
--   **Följ TDD-principerna strikt.**
--   **Använd M-koden från `roadmap.json` (fas 2, steg 2.1, `parameters.content`) som grund för implementeringen i `src/ISSTracker.pq`.**
--   Uppdatera dokumentationen i `docs/` löpande med varje signifikant förändring.
--   Se till att `requirements.txt` och `setup.sh` hålls uppdaterade om nya beroenden introduceras (inte förväntat i denna fas).
--   Den nuvarande uppgiften är att skriva det misslyckade testet.
+-   **Miljökrav:** För att slutföra Fas 3 och 4 i `roadmap.json` behöver du en miljö med:
+    *   Microsoft Power BI Desktop.
+    *   Visual Studio Code.
+    *   Power Query SDK VS Code-tillägget installerat och konfigurerat.
+-   **Byggprocess:**
+    1.  Granska och eventuellt anpassa `build.sh`. Detta skript innehåller de kommandon som föreslås i `roadmap.json` för att bygga `.mez`-filen.
+    2.  Ersätt platshållarikonerna i `resources/icons/` med faktiska PNG-filer (16x16, 20x20, 24x24, 32x32, 40x40, 48x48, 64x64 pixlar).
+    3.  Kör byggkommandot från Power Query SDK (antingen manuellt i VS Code eller via `build.sh` om det anpassats för din miljö). Detta bör generera `ISSTracker.mez` i en `bin/`-katalog.
+    4.  Följ instruktionerna i `build.sh` (och `roadmap.json` Fas 3.2) för att kopiera `.mez`-filen till din Power BI Desktop `Custom Connectors`-mapp.
+-   **Validering:**
+    1.  Utför stegen i `roadmap.json` Fas 4 (END_TO_END_VALIDATION) för att testa anslutningen inifrån Power BI Desktop.
+-   **Den nuvarande (Jules) agentens uppgift:** Är att slutföra förberedelserna ovan (skapa ikonplatshållare, `build.sh`, `ISSTracker.proj` platshållare, och uppdatera `README.md`).
