@@ -1,0 +1,42 @@
+site_name: Pik-ael Power BI Tools - ISS Tracker
+nav:
+    - Översikt: index.md
+    - Anslutningsdetaljer: api_connection.md
+# Add more pages as the project grows.
+
+theme:
+    name: material
+    # You can customize the theme further if needed.
+    # For example, to change the color palette:
+    # palette:
+    #   primary: indigo
+    #   accent: indigo
+
+# Optional: Add plugins for extra functionality
+# plugins:
+#   - search
+
+# Optional: Specify the directory for documentation source files
+# (defaults to 'docs')
+# docs_dir: 'docs'
+
+# Optional: Specify the directory where the site will be built
+# (defaults to 'site')
+# site_dir: 'site'
+
+# Copyright notice if desired
+# copyright: 'Copyright &copy; 2024 Your Name / Your Company'
+
+# Repository information for "Edit on GitHub/GitLab/etc." links
+# repo_url: https://github.com/Caripson/Pik-ael
+# repo_name: Pik-ael
+
+# Edit URI can be configured if your docs are not in the root of the repo
+# edit_uri: edit/main/docs/
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+  - toc:
+      permalink: true
