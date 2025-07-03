@@ -17,9 +17,13 @@ Projektet följer strikta utvecklingsprinciper:
 
 Se `README.md` i projektets rot för instruktioner om hur du sätter upp miljön och bygger projektet.
 
-## Nästa Steg
+## Status och Nästa Steg
 
-Nästa steg i utvecklingen är att implementera kärnlogiken för datahämtning i `src/ISSTracker.pq` och skriva motsvarande tester i `tests/test_ISSTracker.pq`.
+Kärnlogiken för datahämtning i `src/ISSTracker.pq` är implementerad. Den hämtar ISS position från Open Notify API och transformerar datan till ett tabellformat.
+
+Motsvarande tester finns i `tests/test_ISSTracker.pq`. Dessa tester är skrivna i M och fokuserar på att validera den returnerade datastrukturen och grundläggande datatyper från `ISSTracker.Contents()`-funktionen. Syftet med testerna är att säkerställa att anslutningens output överensstämmer med förväntningarna, vilket är en viktig del av TDD-processen, även om testerna i denna miljö utvärderas konceptuellt snarare än genom automatisk körning.
+
+Nästa steg i projektet involverar att bygga `.mez`-filen med Power Query SDK och utföra end-to-end validering i Power BI Desktop, vilket beskrivs i `README.md` och `roadmap.json`.
 
 ---
-*Detta är en initial version av dokumentationen och kommer att byggas ut allt eftersom projektet fortskrider.*
+*Dokumentationen uppdateras kontinuerligt i takt med projektets framsteg.*
