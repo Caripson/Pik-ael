@@ -1,0 +1,174 @@
+{
+  "specVersion": "1.0",
+  "projectName": "PBI_Connector_ISSTracker",
+  "projectDescription": "En Power BI Custom Connector för att hämta aktuell position för ISS från Open Notify API.",
+  "targetSystem": "Microsoft Power BI Desktop",
+  "dependencies": [
+    {
+      "id": "powerbi_desktop",
+      "type": "APPLICATION",
+      "minVersion": "2.120.0.0" 
+    },
+    {
+      "id": "vscode",
+      "type": "APPLICATION",
+      "minVersion": "1.80.0"
+    },
+    {
+      "id": "powerquery_sdk",
+      "type": "VSCODE_EXTENSION",
+      "identifier": "microsoft.powerquerysdk"
+    }
+  ],
+  "phases": [
+    {
+      "phaseId": 0,
+      "phaseName": "ENVIRONMENT_SETUP",
+      "objective": "Verifiera och konfigurera nödvändig utvecklingsmiljö.",
+      "steps": [
+        {
+          "stepId": "0.1",
+          "description": "Verifiera installation av beroenden.",
+          "command": "VERIFY_DEPENDENCIES",
+          "parameters": { "dependencyList": ["powerbi_desktop", "vscode", "powerquery_sdk"] }
+        },
+        {
+          "stepId": "0.2",
+          "description": "Skapa projektets rotkatalog.",
+          "command": "CREATE_DIRECTORY",
+          "parameters": { "path": "C:/PBI_Connectors/ISSTracker" }
+        },
+        {
+          "stepId": "0.3",
+          "description": "Konfigurera Power BI Desktop säkerhetspolicy för att tillåta anpassade anslutningar.",
+          "command": "SET_PBI_SECURITY_POLICY",
+          "parameters": { "level": "AllowUnsupportedExtensions" }
+        }
+      ],
+      "validation": [
+        { "check": "ALL_DEPENDENCIES_PRESENT" },
+        { "check": "DIRECTORY_EXISTS", "path": "C:/PBI_Connectors/ISSTracker" },
+        { "check": "PBI_SECURITY_POLICY_SET", "expectedLevel": "AllowUnsupportedExtensions" }
+      ]
+    },
+    {
+      "phaseId": 1,
+      "phaseName": "PROJECT_INITIALIZATION",
+      "objective": "Generera och kompilera en grundläggande Power Query Connector-projektstruktur.",
+      "preconditions": [ { "phaseComplete": 0 } ],
+      "steps": [
+        {
+          "stepId": "1.1",
+          "description": "Generera projektfiler med Power Query SDK.",
+          "command": "EXEC_PQ_SDK",
+          "parameters": {
+            "sdkCommand": "createConnectorProject",
+            "projectName": "ISSTracker",
+            "targetDirectory": "C:/PBI_Connectors/ISSTracker"
+          }
+        },
+        {
+          "stepId": "1.2",
+          "description": "Kompilera standardprojektet för att verifiera verktygskedjan.",
+          "command": "EXEC_PQ_SDK",
+          "parameters": {
+            "sdkCommand": "buildConnector",
+            "projectFile": "C:/PBI_Connectors/ISSTracker/ISSTracker.proj"
+          }
+        }
+      ],
+      "artifacts": [
+        "C:/PBI_Connectors/ISSTracker/ISSTracker.pq",
+        "C:/PBI_Connectors/ISSTracker/ISSTracker.query.pq",
+        "C:/PBI_Connectors/ISSTracker/bin/AnyCPU/Debug/ISSTracker.mez"
+      ],
+      "validation": [
+        { "check": "FILE_EXISTS", "path": "C:/PBI_Connectors/ISSTracker/bin/AnyCPU/Debug/ISSTracker.mez" }
+      ]
+    },
+    {
+      "phaseId": 2,
+      "phaseName": "IMPLEMENT_DATA_LOGIC",
+      "objective": "Implementera M-kod för datahämtning och transformation.",
+      "preconditions": [ { "phaseComplete": 1 } ],
+      "steps": [
+        {
+          "stepId": "2.1",
+          "description": "Skriv över M-koden i .pq-filen med anslutningslogik.",
+          "command": "WRITE_FILE",
+          "parameters": {
+            "path": "C:/PBI_Connectors/ISSTracker/ISSTracker.pq",
+            "content": "[Version = \"1.0.0\"]\nsection ISSTracker;\n\n[DataSource.Kind=\"ISSTracker\", Publish=\"ISSTracker.Publish\"]\nshared ISSTracker.Contents = () =>\n    let\n        Source = Json.Document(Web.Contents(\"http://api.open-notify.org/iss-now.json\")),\n        position = Source[iss_position],\n        #\"Converted to Table\" = Record.ToTable(position),\n        #\"Renamed Columns\" = Table.RenameColumns(#\"Converted to Table\",{{\"Name\", \"Egenskap\"}, {\"Value\", \"Värde\"}})\n    in\n        #\"Renamed Columns\";\n\nISSTracker.Publish = [\n    Authentication = [ Anonymous = [] ],\n    ButtonText = { \"ISSTracker.Contents\", \"ISS Position Tracker\" },\n    SourceImage = ISSTracker.Icons,\n    SourceTypeImage = ISSTracker.Icons\n];\n\nISSTracker.Icons = [\n    Icon16 = { Extension.Contents(\"ISSTracker16.png\"), Extension.Contents(\"ISSTracker20.png\"), Extension.Contents(\"ISSTracker24.png\"), Extension.Contents(\"ISSTracker32.png\") },\n    Icon32 = { Extension.Contents(\"ISSTracker32.png\"), Extension.Contents(\"ISSTracker40.png\"), Extension.Contents(\"ISSTracker48.png\"), Extension.Contents(\"ISSTracker64.png\") }\n];"
+          }
+        }
+      ],
+      "artifacts": [ "C:/PBI_Connectors/ISSTracker/ISSTracker.pq" ],
+      "validation": [
+        { "check": "FILE_CONTENT_MATCHES", "path": "C:/PBI_Connectors/ISSTracker/ISSTracker.pq" }
+      ]
+    },
+    {
+      "phaseId": 3,
+      "phaseName": "BUILD_AND_DEPLOY",
+      "objective": "Kompilera den färdiga anslutningen och distribuera den lokalt till Power BI.",
+      "preconditions": [ { "phaseComplete": 2 } ],
+      "steps": [
+        {
+          "stepId": "3.1",
+          "description": "Kompilera det modifierade projektet.",
+          "command": "EXEC_PQ_SDK",
+          "parameters": {
+            "sdkCommand": "buildConnector",
+            "projectFile": "C:/PBI_Connectors/ISSTracker/ISSTracker.proj"
+          }
+        },
+        {
+          "stepId": "3.2",
+          "description": "Kopiera den kompilerade .mez-filen till Power BI:s anslutningskatalog.",
+          "command": "COPY_FILE",
+          "parameters": {
+            "source": "C:/PBI_Connectors/ISSTracker/bin/AnyCPU/Debug/ISSTracker.mez",
+            "destination": "[USER_DOCUMENTS]/Power BI Desktop/Custom Connectors/ISSTracker.mez"
+          }
+        }
+      ],
+      "artifacts": [ "[USER_DOCUMENTS]/Power BI Desktop/Custom Connectors/ISSTracker.mez" ],
+      "validation": [
+        { "check": "FILE_EXISTS", "path": "[USER_DOCUMENTS]/Power BI Desktop/Custom Connectors/ISSTracker.mez" }
+      ]
+    },
+    {
+      "phaseId": 4,
+      "phaseName": "END_TO_END_VALIDATION",
+      "objective": "Utför ett fullständigt test av anslutningen inifrån Power BI Desktop.",
+      "preconditions": [ { "phaseComplete": 3 } ],
+      "steps": [
+        {
+          "stepId": "4.1",
+          "description": "Starta Power BI Desktop-processen.",
+          "command": "START_PROCESS",
+          "parameters": { "processName": "PBIDesktop.exe" }
+        },
+        {
+          "stepId": "4.2",
+          "description": "Exekvera ett testskript för att hämta data via den nya anslutningen.",
+          "command": "EXEC_PBI_TEST_SCRIPT",
+          "parameters": {
+            "connectorName": "ISSTracker.Contents",
+            "expectedSchema": { "Egenskap": "text", "Värde": "any" },
+            "expectedRowCount": 2
+          }
+        },
+        {
+          "stepId": "4.3",
+          "description": "Stäng Power BI Desktop-processen.",
+          "command": "TERMINATE_PROCESS",
+          "parameters": { "processName": "PBIDesktop.exe" }
+        }
+      ],
+      "validation": [
+        { "check": "PBI_TEST_SCRIPT_SUCCESS" }
+      ]
+    }
+  ]
+}
