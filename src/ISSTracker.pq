@@ -39,8 +39,8 @@ ISSTracker.Publish = [
 
 # Icons for the connector
 # These are references to icon files that need to be included in the .mez package.
-# For now, these are placeholders. Actual .png files (e.g., ISSTracker16.png) need to be created.
+# Actual .png files (e.g., ISSTracker16.png) need to be created and placed in the 'resources/icons/' directory.
 ISSTracker.Icons = [
-    Icon16 = { Extension.Contents("ISSTracker16.png"), Extension.Contents("ISSTracker20.png"), Extension.Contents("ISSTracker24.png"), Extension.Contents("ISSTracker32.png") },
-    Icon32 = { Extension.Contents("ISSTracker32.png"), Extension.Contents("ISSTracker40.png"), Extension.Contents("ISSTracker48.png"), Extension.Contents("ISSTracker64.png") }
+    Icon16 = { Extension.Contents("resources/icons/ISSTracker16.png"), Extension.Contents("resources/icons/ISSTracker20.png"), Extension.Contents("resources/icons/ISSTracker24.png"), Extension.Contents("resources/icons/ISSTracker32.png") },
+    Icon32 = { Extension.Contents("resources/icons/ISSTracker32.png"), Extension.Contents("resources/icons/ISSTracker40.png"), Extension.Contents("resources/icons/ISSTracker48.png"), Extension.Contents("resources/icons/ISSTracker64.png") }
 ];

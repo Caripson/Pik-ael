@@ -70,21 +70,44 @@ En snabb överblick över viktiga filer och kataloger i projektet.
     ./setup.sh
     ```
 
-3.  **Kör testerna:**
-    Verifiera att allt är korrekt installerat genom att köra den befintliga testsviten.
-    ```bash
-    # (kommando för att köra tester, t.ex. 'pytest')
-    ```
+3.  **Kör testerna (Konceptuellt för M-kod):**
+    Verifiera att allt är korrekt installerat. För M-koden i `src/` och `tests/`, sker testning och validering typiskt inuti Visual Studio Code med Power Query SDK-tillägget. Se `tests/test_ISSTracker.pq` för testdefinitioner.
 
-4.  **Bygg anslutningen:**
-    Använd Power Query SDK för att bygga `.mez`-filen.
-    ```bash
-    # (kommando för att bygga projektet)
-    ```
+## Bygga Anslutningen (`.mez`-filen)
 
-## Användning
+För att bygga `.mez`-filen för anslutningen behöver du ha följande installerat och konfigurerat:
+-   Visual Studio Code
+-   Power Query SDK VS Code-tillägget
+
+Projektet innehåller ett hjälpskript `build.sh` som guidar dig genom stegen, men den faktiska byggnationen sker via Power Query SDK-funktionerna i VS Code.
+
+1.  **Förbered Ikoner:**
+    *   Projektet refererar till ett antal ikonfiler i `resources/icons/` (t.ex. `ISSTracker16.png`, `ISSTracker32.png`, etc.). Platshållarfiler har skapats.
+    *   **Du måste ersätta dessa platshållare med faktiska PNG-ikonfiler** i de specificerade storlekarna (16x16, 20x20, 24x24, 32x32, 40x40, 48x48, 64x64 pixlar) för att anslutningen ska visas korrekt i Power BI.
+
+2.  **Byggprocess med Power Query SDK:**
+    *   Öppna projektmappen i Visual Studio Code.
+    *   Power Query SDK-tillägget bör känna igen projektet (via `ISSTracker.proj` och `.pq`-filerna).
+    *   Högerklicka på `ISSTracker.proj`-filen (eller en `.pq`-fil) i VS Code Explorer och välj "Build Connector Project" (eller motsvarande kommando från SDK:n).
+    *   Detta kommer att kompilera koden och paketera den i en `.mez`-fil. Filen skapas vanligtvis i `bin/AnyCPU/Debug/ISSTracker.mez`.
+    *   Du kan också följa de mer detaljerade instruktionerna och kommandona som beskrivs i `build.sh`.
+
+## Användning (Installation av `.mez`-filen)
 
 När `.mez`-filen är byggd, installera den genom att:
-1. Kopiera `ISSTracker.mez` till din `[Dokument]\Power BI Desktop\Custom Connectors`-mapp.
-2. Starta om Power BI Desktop.
-3. Hitta "ISS Position Tracker" under "Hämta data".
+1.  Kopiera den genererade `ISSTracker.mez` (t.ex. från `bin/AnyCPU/Debug/ISSTracker.mez`) till din Power BI Desktop Custom Connectors-mapp. Denna mapp finns vanligtvis här:
+    *   `[Mina Dokument]\Power BI Desktop\Custom Connectors`
+    *   (Windows: `C:\Users\[DittAnvändarnamn]\Documents\Power BI Desktop\Custom Connectors`)
+    *   Om mappen `Custom Connectors` inte finns, skapa den.
+2.  **Justera Säkerhetsinställningar i Power BI Desktop:**
+    *   Öppna Power BI Desktop.
+    *   Gå till `Arkiv > Alternativ och inställningar > Alternativ`.
+    *   Under `Globalt`, välj `Säkerhet`.
+    *   Under `Data Extensions` (Datatillägg), välj alternativet **"(Rekommenderas inte) Tillåt alla tillägg att läsas in utan validering eller varning"**. Detta krävs för att ladda in anpassade anslutningar som inte är certifierade av Microsoft.
+    *   Klicka `OK`.
+3.  **Starta om Power BI Desktop.**
+    *   Detta är nödvändigt för att Power BI ska kunna identifiera nya anpassade anslutningar.
+4.  Hitta och använd anslutningen:
+    *   Klicka på "Hämta data" från menyfliken Hem.
+    *   Sök efter "ISS Position Tracker" (eller det namn som anges i `ISSTracker.pq` under `Publish`).
+    *   Följ anvisningarna för att ansluta.
